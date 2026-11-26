@@ -1,4 +1,4 @@
-.PHONY: build test integration-test lint fmt mocks swagger migration abi hooks help
+.PHONY: build test integration-test lint fmt mocks swagger agent-node-client migration abi hooks help
 
 # build compiles every Go package under src/.
 build:
@@ -23,10 +23,17 @@ fmt:
 # mocks requires the deepsearch-mockgen CLI (github.com/FournyP/deepsearch-mockgen-cli).
 mocks:
 	deepsearch-mockgen -S ./src -O ./tests -A -P
+	@# The generated agent-node client declares several interfaces in one file; keep a single mock of it.
+	@cd tests/identity_directory_http_agent_card_mocks/clients_mocks && mv -f client_mock.go oapi_client.gen_mock.go && \
+		rm -f client_with_responses_mock.go http_request_doer_mock.go
 
 # swagger regenerates the host's API docs (needs the go toolchain; runs swag via go run).
 swagger:
 	./src/identity_directory_host/docs/generate_docs.sh
+
+# agent-node-client regenerates the agent-node gateway client from the vendored OpenAPI spec (needs the go toolchain).
+agent-node-client:
+	./src/identity_directory_http_agent_card/clients/generate_client.sh
 
 # migration NAME=<name> diffs the gorm models into a new goose migration (needs atlas and Docker).
 migration:
@@ -50,6 +57,7 @@ help:
 	@echo "fmt         - golangci-lint fmt, 120-char cap"
 	@echo "mocks       - regenerate mocks (needs deepsearch-mockgen)"
 	@echo "swagger     - regenerate host API docs (needs go toolchain)"
+	@echo "agent-node-client - regenerate the agent-node gateway client (needs go toolchain)"
 	@echo "migration   - NAME=<name>: new migration from the gorm models (needs atlas + Docker)"
 	@echo "abi         - regenerate contract bindings (needs abigen)"
 	@echo "hooks       - install git hooks (format + secret scan on commit, build/lint/test on push)"

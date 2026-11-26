@@ -21,7 +21,7 @@ const (
 	secp256k1CoordinateLen = 32
 	ecdsaSignatureLen      = 64
 	// maxCardSignatures bounds the verifications one hostile card can make us run; rotation needs a couple.
-	maxCardSignatures = 4
+	maxCardSignatures = 16
 )
 
 type jwsProtectedHeader struct {

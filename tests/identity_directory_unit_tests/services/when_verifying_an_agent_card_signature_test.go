@@ -2,6 +2,7 @@ package services_test
 
 import (
 	"encoding/json"
+	"slices"
 	"strings"
 	"testing"
 
@@ -53,13 +54,13 @@ func TestWhenVerifyingAnAgentCardSignature(t *testing.T) {
 	require.NoError(t, err)
 	signer := strings.ToLower(crypto.PubkeyToAddress(key.PublicKey).Hex())
 
-	t.Run("Given a card carrying more than 4 signatures", func(t *testing.T) {
+	t.Run("Given a card carrying more than 16 signatures", func(t *testing.T) {
 		t.Parallel()
 
 		signed := map[string]any{}
 		require.NoError(t, json.Unmarshal(common_tests.SignAgentCard(content, key), &signed))
 		signature := signed["signatures"].([]any)[0]
-		signed["signatures"] = []any{signature, signature, signature, signature, signature}
+		signed["signatures"] = slices.Repeat([]any{signature}, 17)
 		raw, err := json.Marshal(signed)
 		require.NoError(t, err)
 
@@ -70,7 +71,7 @@ func TestWhenVerifyingAnAgentCardSignature(t *testing.T) {
 
 			verified, err := suite.sut.Verify(suite.card(t, raw), []string{signer})
 
-			assert.ErrorContains(t, err, "at most 4 are checked")
+			assert.ErrorContains(t, err, "at most 16 are checked")
 			assert.False(t, verified)
 		})
 	})

@@ -35,6 +35,18 @@
         "go run (?<depName>github\\.com/swaggo/swag(?:/v2)?)/cmd/swag@(?<currentValue>v\\S+)"
       ],
       "datasourceTemplate": "go"
+    },
+    {
+      "customType": "regex",
+      "description": "oapi-codegen version used to generate the HTTP clients.",
+      "managerFilePatterns": [
+        "/(^|/)generate_client\\.sh$/"
+      ],
+      "matchStrings": [
+        "OAPI_CODEGEN_VERSION=\"(?<currentValue>v[^\"]+)\""
+      ],
+      "datasourceTemplate": "go",
+      "depNameTemplate": "github.com/oapi-codegen/oapi-codegen/v2"
     }
   ],
   "packageRules": [
