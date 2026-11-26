@@ -1,0 +1,371 @@
+basePath: /
+definitions:
+  errors.BadRequestError:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+  errors.InternalError:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+  errors.NotFoundError:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+  errors.UnavailableError:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+  errors.ValidationError:
+    properties:
+      field:
+        type: string
+      message:
+        type: string
+    type: object
+  responses.AgentAddressResponse:
+    properties:
+      type:
+        type: string
+      value:
+        type: string
+    type: object
+  responses.AgentCardResponse:
+    properties:
+      endpoints:
+        additionalProperties:
+          type: string
+        type: object
+      ensName:
+        type: string
+      name:
+        type: string
+      paymentMethods:
+        items:
+          type: string
+        type: array
+      protocol:
+        type: string
+      protocolVersion:
+        type: string
+      url:
+        type: string
+      verified:
+        type: boolean
+    type: object
+  responses.AgentCollectionResponse:
+    properties:
+      address:
+        type: string
+      chainId:
+        type: integer
+      description:
+        type: string
+      name:
+        type: string
+      symbol:
+        type: string
+    type: object
+  responses.AgentResponse:
+    properties:
+      addresses:
+        items:
+          $ref: '#/definitions/responses.AgentAddressResponse'
+        type: array
+      attributes:
+        additionalProperties:
+          type: string
+        type: object
+      chainId:
+        type: integer
+      cloneOf:
+        type: string
+      collectionAddress:
+        type: string
+      collectionName:
+        type: string
+      creator:
+        type: string
+      ensName:
+        type: string
+      ensRecords:
+        additionalProperties:
+          type: string
+        type: object
+      images:
+        additionalProperties:
+          type: string
+        type: object
+      name:
+        type: string
+      owner:
+        type: string
+      role:
+        type: string
+      tokenId:
+        type: string
+      url:
+        type: string
+    type: object
+  responses.GetHealthResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  responses.ListCollectionsResponse:
+    properties:
+      elementsPerPage:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/responses.AgentCollectionResponse'
+        type: array
+      page:
+        type: integer
+      totalElements:
+        type: integer
+    type: object
+  responses.SearchAgentsResponse:
+    properties:
+      elementsPerPage:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/responses.AgentResponse'
+        type: array
+      page:
+        type: integer
+      totalElements:
+        type: integer
+    type: object
+info:
+  contact: {}
+  description: Directory of the 6022 agents registered on-chain, also served over
+    MCP at /mcp.
+  title: Agentic Identity Directory API
+  version: "1.0"
+paths:
+  /agents:
+    get:
+      description: Finds indexed 6022 agents; every field is written by the agent's
+        owner.
+      parameters:
+      - description: words in agent names, collections and attributes
+        in: query
+        name: query
+        type: string
+      - description: exact role attribute
+        in: query
+        name: role
+        type: string
+      - description: EVM chain id
+        in: query
+        name: chainId
+        type: integer
+      - description: 0x collection address
+        in: query
+        name: collectionAddress
+        type: string
+      - description: 0x owner address
+        in: query
+        name: owner
+        type: string
+      - description: one of the agent's own addresses
+        in: query
+        name: address
+        type: string
+      - description: 'true or false: has a published url'
+        in: query
+        name: published
+        type: string
+      - description: page, from 1
+        in: query
+        name: page
+        type: integer
+      - description: 1 to 100, 10 by default
+        in: query
+        name: elementsPerPage
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SearchAgentsResponse'
+        "400":
+          description: invalid_query
+          schema:
+            $ref: '#/definitions/errors.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.InternalError'
+      summary: Search agents
+      tags:
+      - Agents
+  /agents/{chainId}/{collectionAddress}/{tokenId}:
+    get:
+      parameters:
+      - description: EVM chain id
+        in: path
+        name: chainId
+        required: true
+        type: integer
+      - description: 0x collection address
+        in: path
+        name: collectionAddress
+        required: true
+        type: string
+      - description: decimal token id
+        in: path
+        name: tokenId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.AgentResponse'
+        "400":
+          description: invalid_path
+          schema:
+            $ref: '#/definitions/errors.BadRequestError'
+        "404":
+          description: agent_not_found
+          schema:
+            $ref: '#/definitions/errors.NotFoundError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.InternalError'
+      summary: Get an agent
+      tags:
+      - Agents
+  /agents/ens/{ensName}:
+    get:
+      parameters:
+      - description: e.g. my-agent.my-collection.137.6022.eth
+        in: path
+        name: ensName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.AgentResponse'
+        "400":
+          description: invalid_path
+          schema:
+            $ref: '#/definitions/errors.BadRequestError'
+        "404":
+          description: agent_not_found
+          schema:
+            $ref: '#/definitions/errors.NotFoundError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.InternalError'
+      summary: Get an agent by ENS name
+      tags:
+      - Agents
+  /agents/ens/{ensName}/card:
+    get:
+      description: Fetches the agent's /.well-known/6022 and checks its signature
+        against the agent's addresses.
+      parameters:
+      - description: e.g. my-agent.my-collection.137.6022.eth
+        in: path
+        name: ensName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.AgentCardResponse'
+        "400":
+          description: invalid_path
+          schema:
+            $ref: '#/definitions/errors.BadRequestError'
+        "404":
+          description: agent_not_found or agent_url_not_published
+          schema:
+            $ref: '#/definitions/errors.NotFoundError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.InternalError'
+        "502":
+          description: the card is unreachable, invalid or wrongly signed
+          schema:
+            $ref: '#/definitions/errors.UnavailableError'
+      summary: Get an agent's live card
+      tags:
+      - Agents
+  /collections:
+    get:
+      parameters:
+      - description: EVM chain id
+        in: query
+        name: chainId
+        type: integer
+      - description: page, from 1
+        in: query
+        name: page
+        type: integer
+      - description: 1 to 100, 10 by default
+        in: query
+        name: elementsPerPage
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.ListCollectionsResponse'
+        "400":
+          description: invalid_query
+          schema:
+            $ref: '#/definitions/errors.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.InternalError'
+      summary: List agent collections
+      tags:
+      - Collections
+  /health:
+    get:
+      description: Liveness probe for the identity directory.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.GetHealthResponse'
+      summary: Health check
+      tags:
+      - Health
+swagger: "2.0"

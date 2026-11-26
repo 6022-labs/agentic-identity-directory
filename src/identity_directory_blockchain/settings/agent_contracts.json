@@ -1,0 +1,23 @@
+{
+  "_comment": "6022 contract addresses per EVM chain id. Baked into the build, not operator config.",
+  "chains": [
+    {
+      "chainId": 137,
+      "name": "polygon-mainnet",
+      "agentCollectionsManager": "0xb0dc8a83c700A9BBcc53cA1a2C6993a63129d2F6",
+      "agentEnsRegistry": "0x23dbc335f966d9869940FB55f61E919118AAD236"
+    },
+    {
+      "chainId": 80002,
+      "name": "polygon-amoy",
+      "agentCollectionsManager": "0x8095A0D4bE42A61db9e609aA693f516044Bda990",
+      "agentEnsRegistry": "0x37c5879529E5b0241663ed40feeebb2326BBEE0d"
+    },
+    {
+      "chainId": 31337,
+      "name": "anvil-local",
+      "agentCollectionsManager": "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0",
+      "agentEnsRegistry": "0x5fc8d32690cc91d4c39d9d3abcbd16989f875707"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "_comment": "Deployment block of each chain's AgentCollectionsManager. Baked into the build, not operator config.",
+  "startBlocks": [
+    {
+      "chainId": 137,
+      "name": "polygon-mainnet",
+      "startBlock": 91505896
+    },
+    {
+      "chainId": 80002,
+      "name": "polygon-amoy",
+      "startBlock": 44057511
+    },
+    {
+      "chainId": 31337,
+      "name": "anvil-local",
+      "startBlock": 1
+    }
+  ]
+}

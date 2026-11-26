@@ -1,0 +1,37 @@
+package identity_directory_mvc
+
+import (
+	"github.com/6022-labs/agentic-identity-directory/src/common/mvc"
+	"github.com/6022-labs/agentic-identity-directory/src/identity_directory/use_cases"
+	"github.com/gofiber/fiber/v3"
+)
+
+const HealthEndpoint = "/health"
+
+type HealthController struct {
+	errorWriter *mvc.ErrorWriter
+	getHealth   *use_cases.GetHealth
+}
+
+func NewHealthController(errorWriter *mvc.ErrorWriter, getHealth *use_cases.GetHealth) *HealthController {
+	return &HealthController{errorWriter: errorWriter, getHealth: getHealth}
+}
+
+func (c *HealthController) RegisterRoutes(app fiber.Router) {
+	app.Get(HealthEndpoint, c.GetHealth)
+}
+
+// @Summary Health check
+// @Description Liveness probe for the identity directory.
+// @Tags Health
+// @Produce json
+// @Success 200 {object} responses.GetHealthResponse
+// @Router /health [get]
+func (c *HealthController) GetHealth(ctx fiber.Ctx) error {
+	response, err := c.getHealth.Execute(ctx.Context())
+	if err != nil {
+		return c.errorWriter.Write(ctx, err)
+	}
+
+	return ctx.JSON(response)
+}

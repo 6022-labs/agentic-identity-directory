@@ -1,0 +1,119 @@
+services:
+  identity-directory:
+    build:
+      context: .
+      dockerfile: src/identity_directory_host/Dockerfile
+    env_file:
+      - src/identity_directory_host/.env
+    environment:
+      - DATABASE__URL=host=identity-directory-db port=5432 user=postgres password=postgres dbname=identity_directory sslmode=disable
+      - TELEMETRY__ENABLED=true
+      - TELEMETRY__ENDPOINT=identity-directory-alloy:4317
+      - TELEMETRY__INSECURE=true
+      - TELEMETRY__INSTANCE_ID=local-dev
+      - TELEMETRY__ENVIRONMENT=local
+      # A token means bearer, a username + password means basic; setting both is fatal.
+      # - TELEMETRY__AUTH_TOKEN=shared-secret
+      # - TELEMETRY__AUTH_USERNAME=ingest-user
+      # - TELEMETRY__AUTH_PASSWORD=secret
+    ports:
+      - "5000:5000"
+    depends_on:
+      identity-directory-db:
+        condition: service_healthy
+
+  identity-directory-db:
+    image: "postgres:18-alpine"
+    container_name: identity-directory-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: identity_directory
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d identity_directory"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+    volumes:
+      - identity-directory-db-data:/var/lib/postgresql
+
+  # Observability stack: Alloy (OTLP) -> Mimir + Loki + Tempo, shown in Grafana.
+  identity-directory-alloy:
+    build: ./grafana/alloy
+    container_name: identity-directory-alloy
+    environment:
+      - LOKI_URL=http://identity-directory-loki:3100
+      - MIMIR_URL=http://identity-directory-mimir:9009
+      - TEMPO_OTLP_URL=http://identity-directory-tempo:4318
+      # Ingest auth is off by default. htpasswd (one credential per sender, `$` escaped as `$$`)
+      # wins over token (one shared by every sender).
+      # - OTLP_AUTH_HTPASSWD=ingest-user:secret
+      # - OTLP_AUTH_TOKEN=shared-secret
+      # - OTLP_TLS_CERT_FILE=/certs/alloy.crt
+      # - OTLP_TLS_KEY_FILE=/certs/alloy.key
+      # - OTLP_TLS_CLIENT_CA_FILE=/certs/ca.crt
+    ports:
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+
+  identity-directory-mimir:
+    image: "grafana/mimir:3.2.3"
+    container_name: identity-directory-mimir
+    command: ["--config.file=/etc/mimir/mimir.yml", "--target=all"]
+    volumes:
+      - ./grafana/mimir/mimir-config.yaml:/etc/mimir/mimir.yml
+      - identity-directory-mimir-data:/mimir-data
+    ports:
+      - "9009:9009"
+
+  identity-directory-loki:
+    image: "grafana/loki:3.7.9"
+    container_name: identity-directory-loki
+    command: ["-config.file=/etc/loki/loki.yaml"]
+    volumes:
+      - ./grafana/loki/loki-config.yaml:/etc/loki/loki.yaml
+      - identity-directory-loki-data:/loki
+    ports:
+      - "3100:3100"
+
+  identity-directory-tempo:
+    image: "grafana/tempo:3.1.1"
+    container_name: identity-directory-tempo
+    depends_on:
+      - identity-directory-mimir
+    command: ["-config.file=/etc/tempo/tempo.yml"]
+    volumes:
+      - ./grafana/tempo/tempo-config.yaml:/etc/tempo/tempo.yml
+      - identity-directory-tempo-data:/var/tempo
+    ports:
+      - "3200:3200"
+
+  identity-directory-grafana:
+    image: "grafana/grafana:13.2.4"
+    container_name: identity-directory-grafana
+    depends_on:
+      - identity-directory-mimir
+      - identity-directory-loki
+      - identity-directory-tempo
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      # Local dev only; this stack is not meant to be exposed.
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      MIMIR_URL: "http://identity-directory-mimir:9009"
+      LOKI_URL: "http://identity-directory-loki:3100"
+      TEMPO_URL: "http://identity-directory-tempo:3200"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+
+volumes:
+  identity-directory-db-data:
+  identity-directory-mimir-data:
+  identity-directory-loki-data:
+  identity-directory-tempo-data:
