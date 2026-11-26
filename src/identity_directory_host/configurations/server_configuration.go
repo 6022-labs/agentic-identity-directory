@@ -1,0 +1,83 @@
+package configurations
+
+import (
+	"time"
+
+	"github.com/6022-labs/agentic-identity-directory/src/common/mvc"
+	mvc_interfaces "github.com/6022-labs/agentic-identity-directory/src/common/mvc/interfaces"
+	mvc_middlewares "github.com/6022-labs/agentic-identity-directory/src/common/mvc/middlewares"
+	"github.com/6022-labs/agentic-identity-directory/src/common/settings"
+	identity_directory_settings "github.com/6022-labs/agentic-identity-directory/src/identity_directory/settings"
+	_ "github.com/6022-labs/agentic-identity-directory/src/identity_directory_host/docs"
+	fiberotel "github.com/gofiber/contrib/v3/otel"
+	"github.com/gofiber/contrib/v3/swaggo"
+	fiberzap "github.com/gofiber/contrib/v3/zap"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/cors"
+	"github.com/gofiber/fiber/v3/middleware/limiter"
+	"go.uber.org/dig"
+	"go.uber.org/zap"
+)
+
+const AppName = "6022-IdentityDirectory"
+
+func ConfigureServer(container *dig.Container) {
+	if err := container.Provide(newHttpServer); err != nil {
+		panic(err)
+	}
+
+	if err := container.Invoke(registerRoutes); err != nil {
+		panic(err)
+	}
+}
+
+func newHttpServer(
+	hostSettings *settings.HostSettings,
+	proxySettings *identity_directory_settings.ProxySettings,
+	errorWriter *mvc.ErrorWriter,
+) *fiber.App {
+	return fiber.New(fiber.Config{
+		AppName:            AppName,
+		BodyLimit:          hostSettings.BodyLimitBytes,
+		ErrorHandler:       errorWriter.Write,
+		ProxyHeader:        proxySettings.Header,
+		TrustProxy:         proxySettings.Header != "",
+		TrustProxyConfig:   fiber.TrustProxyConfig{Proxies: proxySettings.TrustedProxies},
+		EnableIPValidation: true,
+	})
+}
+
+type registerRoutesParams struct {
+	dig.In
+
+	App               *fiber.App
+	Logger            *zap.Logger
+	RateLimitSettings *identity_directory_settings.RateLimitSettings
+	RequestMetrics    *mvc_middlewares.ApiRequestMetricsMiddleware
+	Controllers       []mvc_interfaces.ControllerInterface `group:"controllers"`
+}
+
+func registerRoutes(p registerRoutesParams) {
+	p.App.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{"*"},
+	}))
+	// Spans only: ApiRequestMetrics owns http.server.*.
+	p.App.Use(fiberotel.New(fiberotel.WithoutMetrics(true)))
+	p.App.Use(p.RequestMetrics.Handle)
+	p.App.Use(fiberzap.New(fiberzap.Config{Logger: p.Logger}))
+
+	p.App.Use(limiter.New(limiter.Config{
+		Max:        p.RateLimitSettings.RequestsPerSecond,
+		Expiration: 1 * time.Second,
+		LimitReached: func(fiber.Ctx) error {
+			return fiber.ErrTooManyRequests
+		},
+	}))
+
+	p.App.Get("/swagger/*", swaggo.New())
+
+	for _, controller := range p.Controllers {
+		controller.RegisterRoutes(p.App)
+	}
+}

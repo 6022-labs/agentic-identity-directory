@@ -1,0 +1,3018 @@
+components:
+  schemas:
+    enums.MessageRole:
+      enum:
+      - user
+      - assistant
+      - system
+      type: string
+      x-enum-varnames:
+      - MessageRoleUser
+      - MessageRoleAssistant
+      - MessageRoleSystem
+    errors.ConflictError:
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      type: object
+    errors.InternalError:
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      type: object
+    errors.NotFoundError:
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      type: object
+    errors.UnauthorizedError:
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      type: object
+    errors.UnavailableError:
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      type: object
+    errors.ValidationError:
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+      type: object
+    models.ExternalPaymentReceiveRulePrice:
+      properties:
+        addressPatterns:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        price:
+          type: string
+      type: object
+    requests.A2AMessage:
+      properties:
+        contextId:
+          type: string
+        messageId:
+          type: string
+        parts:
+          items:
+            $ref: '#/components/schemas/requests.A2APart'
+          type: array
+          uniqueItems: false
+        role:
+          type: string
+      type: object
+    requests.A2AMessageSendParams:
+      properties:
+        message:
+          $ref: '#/components/schemas/requests.A2AMessage'
+      type: object
+    requests.A2AMethod:
+      enum:
+      - SendMessage
+      type: string
+      x-enum-varnames:
+      - A2AMethodSendMessage
+    requests.A2APart:
+      properties:
+        text:
+          type: string
+      type: object
+    requests.A2ARequest:
+      properties:
+        id:
+          items:
+            type: integer
+          type: array
+          uniqueItems: false
+        jsonrpc:
+          type: string
+        method:
+          $ref: '#/components/schemas/requests.A2AMethod'
+        params:
+          $ref: '#/components/schemas/requests.A2AMessageSendParams'
+      type: object
+    requests.AppendConversationMessageInput:
+      properties:
+        content:
+          type: string
+        role:
+          $ref: '#/components/schemas/enums.MessageRole'
+        timestamp:
+          type: string
+      type: object
+    requests.AppendConversationMessagesRequest:
+      properties:
+        messages:
+          items:
+            $ref: '#/components/schemas/requests.AppendConversationMessageInput'
+          type: array
+          uniqueItems: false
+      type: object
+    requests.ConversationRef:
+      properties:
+        id:
+          type: string
+      type: object
+    requests.CreateConversationRequest:
+      properties:
+        name:
+          type: string
+      type: object
+    requests.CreateMcpConnectionRequest:
+      properties:
+        allowedToolPatterns:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        headerAuth:
+          additionalProperties:
+            type: string
+          type: object
+        name:
+          type: string
+        url:
+          type: string
+      type: object
+    requests.CreateResponseRequest:
+      properties:
+        conversation:
+          $ref: '#/components/schemas/requests.ConversationRef'
+        input:
+          $ref: '#/components/schemas/requests.ResponseInput'
+        instructions:
+          type: string
+        max_output_tokens:
+          type: integer
+        metadata:
+          additionalProperties:
+            type: string
+          type: object
+        model:
+          type: string
+        previous_response_id:
+          type: string
+        store:
+          type: boolean
+        stream:
+          type: boolean
+        temperature:
+          type: number
+        top_p:
+          type: number
+      type: object
+    requests.DiscoverMcpServerToolsRequest:
+      properties:
+        connectionId:
+          type: string
+        headerAuth:
+          additionalProperties:
+            type: string
+          type: object
+        url:
+          type: string
+      type: object
+    requests.InputMessage:
+      properties:
+        content:
+          type: string
+        role:
+          type: string
+      type: object
+    requests.RefreshTokenRequest:
+      properties:
+        refreshToken:
+          type: string
+      type: object
+    requests.ResponseInput:
+      properties:
+        messages:
+          items:
+            $ref: '#/components/schemas/requests.InputMessage'
+          type: array
+      type: object
+    requests.SavePaymentReceiveRulePriceRequest:
+      properties:
+        addressPatterns:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        price:
+          type: string
+      type: object
+    requests.SavePaymentReceiveRuleRequest:
+      properties:
+        config:
+          type: object
+        method:
+          type: string
+        name:
+          type: string
+        prices:
+          items:
+            $ref: '#/components/schemas/requests.SavePaymentReceiveRulePriceRequest'
+          type: array
+          uniqueItems: false
+      type: object
+    requests.SavePaymentSpendRuleRequest:
+      properties:
+        config:
+          type: object
+        maxAmountPerPayment:
+          type: string
+        method:
+          type: string
+        name:
+          type: string
+        windows:
+          items:
+            $ref: '#/components/schemas/requests.SavePaymentSpendRuleWindowRequest'
+          type: array
+          uniqueItems: false
+      type: object
+    requests.SavePaymentSpendRuleWindowRequest:
+      properties:
+        maxAmount:
+          type: string
+        windowSeconds:
+          type: integer
+      type: object
+    requests.SetAgentGuidanceRequest:
+      properties:
+        content:
+          type: string
+      type: object
+    requests.SetLlmConfigRequest:
+      properties:
+        apiKey:
+          type: string
+        baseUrl:
+          type: string
+        extensions:
+          additionalProperties: {}
+          type: object
+        model:
+          type: string
+        provider:
+          type: string
+      type: object
+    requests.UpdateConversationRequest:
+      properties:
+        name:
+          type: string
+      type: object
+    requests.UpdateMcpConnectionRequest:
+      properties:
+        allowedToolPatterns:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        headerAuth:
+          additionalProperties:
+            type: string
+          type: object
+        name:
+          type: string
+        url:
+          type: string
+      type: object
+    requests.UpdatePaymentSpendPolicyRequest:
+      properties:
+        payToPatterns:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+      type: object
+    requests.UpdateSelfToolRequest:
+      properties:
+        enabled:
+          type: boolean
+      type: object
+    requests.VerifyAuthRequest:
+      properties:
+        address:
+          type: string
+        signature:
+          type: string
+      type: object
+    responses.A2AMessage:
+      properties:
+        contextId:
+          type: string
+        messageId:
+          type: string
+        parts:
+          items:
+            $ref: '#/components/schemas/responses.A2APart'
+          type: array
+          uniqueItems: false
+        role:
+          type: string
+      type: object
+    responses.A2APart:
+      properties:
+        text:
+          type: string
+      type: object
+    responses.A2AResponse:
+      properties:
+        id:
+          items:
+            type: integer
+          type: array
+          uniqueItems: false
+        jsonrpc:
+          type: string
+        result:
+          $ref: '#/components/schemas/responses.SendMessageResult'
+      type: object
+    responses.Agent6022Endpoints:
+      properties:
+        chatCompletions:
+          type: string
+        responses:
+          type: string
+      type: object
+    responses.AgentCapabilities:
+      properties:
+        pushNotifications:
+          type: boolean
+        streaming:
+          type: boolean
+      type: object
+    responses.AgentCardSignature:
+      properties:
+        protected:
+          type: string
+        signature:
+          type: string
+      type: object
+    responses.AgentCollectionResponse:
+      properties:
+        address:
+          type: string
+        description:
+          type: string
+        moderatorCount:
+          type: integer
+        name:
+          type: string
+        nextTokenId:
+          type: integer
+      type: object
+    responses.AgentCollectionsResponse:
+      properties:
+        collections:
+          items:
+            $ref: '#/components/schemas/responses.AgentCollectionResponse'
+          type: array
+          uniqueItems: false
+      type: object
+    responses.AgentGuidanceResponse:
+      properties:
+        content:
+          type: string
+      type: object
+    responses.AgentInterface:
+      properties:
+        protocolBinding:
+          type: string
+        protocolVersion:
+          type: string
+        url:
+          type: string
+      type: object
+    responses.AgentRegistrationResponse:
+      properties:
+        addresses:
+          additionalProperties:
+            type: string
+          type: object
+        attributes:
+          additionalProperties:
+            type: string
+          type: object
+        chainId:
+          type: string
+        cloneOf:
+          type: integer
+        collectionAddress:
+          type: string
+        ensDomain:
+          type: string
+        ensStatus:
+          type: string
+        images:
+          additionalProperties:
+            type: string
+          type: object
+        mintStatus:
+          type: string
+        name:
+          type: string
+        owner:
+          type: string
+        proposalId:
+          type: integer
+        tokenId:
+          type: integer
+      type: object
+    responses.AgentSkill:
+      properties:
+        description:
+          type: string
+        id:
+          type: string
+        inputModes:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        name:
+          type: string
+        outputModes:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        tags:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+      type: object
+    responses.AgentSoulResponse:
+      properties:
+        soul:
+          type: string
+      type: object
+    responses.AppendConversationMessagesResponse:
+      properties:
+        inserted:
+          items:
+            $ref: '#/components/schemas/responses.ConversationMessage'
+          type: array
+          uniqueItems: false
+      type: object
+    responses.ConfigResponse:
+      properties:
+        evmChains:
+          additionalProperties:
+            $ref: '#/components/schemas/responses.EvmChainConfig'
+          type: object
+        ipfsGatewayUrlTemplates:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+      type: object
+    responses.ConversationMessage:
+      properties:
+        content:
+          type: string
+        conversationId:
+          type: string
+        id:
+          type: string
+        role:
+          type: string
+        timestamp:
+          type: string
+        toolCallId:
+          type: string
+        toolCalls:
+          type: string
+      type: object
+    responses.ConversationRef:
+      properties:
+        id:
+          type: string
+      type: object
+    responses.ConversationResponse:
+      properties:
+        conversationId:
+          type: string
+        createdAt:
+          type: string
+        messageCount:
+          type: integer
+        name:
+          type: string
+        updatedAt:
+          type: string
+      type: object
+    responses.EnsInfoResponse:
+      properties:
+        collectionAddress:
+          type: string
+        records:
+          items:
+            $ref: '#/components/schemas/responses.KeyValue'
+          type: array
+          uniqueItems: false
+        tokenId:
+          type: integer
+      type: object
+    responses.EvmChainConfig:
+      properties:
+        collectionCreatorAddress:
+          type: string
+        collectionsManagerAddress:
+          type: string
+        ensRegistryAddress:
+          type: string
+        facilitatorNetwork:
+          type: string
+        mintable:
+          type: boolean
+        token6022Address:
+          type: string
+      type: object
+    responses.GetAuthChallengeResponse:
+      properties:
+        expiresAt:
+          type: string
+        message:
+          type: string
+      type: object
+    responses.GetHealthResponse:
+      properties:
+        status:
+          type: string
+        uptimeSeconds:
+          type: integer
+      type: object
+    responses.GetLlmConfigResponse:
+      properties:
+        baseUrl:
+          type: string
+        createdAt:
+          type: string
+        id:
+          type: string
+        model:
+          type: string
+        provider:
+          type: string
+        setupStatus:
+          type: string
+        updatedAt:
+          type: string
+      type: object
+    responses.GetPaymentReceivePolicyResponse:
+      properties:
+        agentId:
+          type: string
+        agentWalletAddress:
+          type: string
+        createdAt:
+          type: string
+        id:
+          type: string
+        updatedAt:
+          type: string
+      type: object
+    responses.GetPaymentSpendPolicyResponse:
+      properties:
+        agentId:
+          type: string
+        createdAt:
+          type: string
+        id:
+          type: string
+        payToPatterns:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        updatedAt:
+          type: string
+      type: object
+    responses.KeyValue:
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+      type: object
+    responses.ListConversationMessagesResponse:
+      properties:
+        messages:
+          items:
+            $ref: '#/components/schemas/responses.ConversationMessage'
+          type: array
+          uniqueItems: false
+      type: object
+    responses.ListConversationsResponse:
+      properties:
+        conversations:
+          items:
+            $ref: '#/components/schemas/responses.ConversationResponse'
+          type: array
+          uniqueItems: false
+        elementsPerPage:
+          type: integer
+        page:
+          type: integer
+        totalElements:
+          type: integer
+      type: object
+    responses.ListMcpConnectionsResponse:
+      properties:
+        connections:
+          items:
+            $ref: '#/components/schemas/responses.McpConnectionResponse'
+          type: array
+          uniqueItems: false
+      type: object
+    responses.ListPaymentReceiveRulesResponse:
+      properties:
+        rules:
+          items:
+            $ref: '#/components/schemas/responses.PaymentReceiveRuleResponse'
+          type: array
+          uniqueItems: false
+      type: object
+    responses.ListPaymentSpendRulesResponse:
+      properties:
+        rules:
+          items:
+            $ref: '#/components/schemas/responses.PaymentSpendRuleResponse'
+          type: array
+          uniqueItems: false
+      type: object
+    responses.ListSelfToolsResponse:
+      properties:
+        tools:
+          items:
+            $ref: '#/components/schemas/responses.SelfToolResponse'
+          type: array
+          uniqueItems: false
+      type: object
+    responses.McpConnectionResponse:
+      properties:
+        allowedToolPatterns:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        createdAt:
+          type: string
+        headerAuthKeys:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        id:
+          type: string
+        name:
+          type: string
+        updatedAt:
+          type: string
+        url:
+          type: string
+      type: object
+    responses.McpServerToolResponse:
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+      type: object
+    responses.McpServerToolsResponse:
+      properties:
+        tools:
+          items:
+            $ref: '#/components/schemas/responses.McpServerToolResponse'
+          type: array
+          uniqueItems: false
+      type: object
+    responses.MintInfoResponse:
+      properties:
+        addresses:
+          additionalProperties:
+            type: string
+          type: object
+        attributes:
+          items:
+            $ref: '#/components/schemas/responses.KeyValue'
+          type: array
+          uniqueItems: false
+        cloneOf:
+          type: integer
+        collectionAddress:
+          type: string
+        images:
+          items:
+            $ref: '#/components/schemas/responses.KeyValue'
+          type: array
+          uniqueItems: false
+        moderatorCount:
+          type: integer
+        name:
+          type: string
+        ownerIsModerator:
+          type: boolean
+        to:
+          type: string
+      type: object
+    responses.OutputContent:
+      properties:
+        annotations:
+          items: {}
+          type: array
+          uniqueItems: false
+        text:
+          type: string
+        type:
+          type: string
+      type: object
+    responses.OutputItem:
+      properties:
+        content:
+          items:
+            $ref: '#/components/schemas/responses.OutputContent'
+          type: array
+          uniqueItems: false
+        id:
+          type: string
+        role:
+          type: string
+        status:
+          type: string
+        type:
+          type: string
+      type: object
+    responses.PaymentReceiveRuleResponse:
+      properties:
+        config:
+          type: object
+        id:
+          type: string
+        method:
+          type: string
+        name:
+          type: string
+        prices:
+          items:
+            $ref: '#/components/schemas/models.ExternalPaymentReceiveRulePrice'
+          type: array
+          uniqueItems: false
+      type: object
+    responses.PaymentSpendRuleResponse:
+      properties:
+        config:
+          type: object
+        id:
+          type: string
+        maxAmountPerPayment:
+          type: string
+        method:
+          type: string
+        name:
+          type: string
+        windows:
+          items:
+            $ref: '#/components/schemas/responses.PaymentSpendRuleWindowResponse'
+          type: array
+          uniqueItems: false
+      type: object
+    responses.PaymentSpendRuleWindowResponse:
+      properties:
+        maxAmount:
+          type: string
+        resetsAt:
+          type: string
+        spent:
+          type: string
+        windowSeconds:
+          type: integer
+      type: object
+    responses.RefreshAuthResponse:
+      properties:
+        expiresAt:
+          type: string
+        refreshExpiresAt:
+          type: string
+        refreshToken:
+          type: string
+        token:
+          type: string
+      type: object
+    responses.RegistrationStatusResponse:
+      properties:
+        ensStatus:
+          type: string
+        ensTxHash:
+          type: string
+        mintStatus:
+          type: string
+        mintTxHash:
+          type: string
+        proposalId:
+          type: integer
+        tokenId:
+          type: integer
+      type: object
+    responses.Response:
+      properties:
+        conversation:
+          $ref: '#/components/schemas/responses.ConversationRef'
+        created_at:
+          type: integer
+        error:
+          $ref: '#/components/schemas/responses.ResponseError'
+        id:
+          type: string
+        metadata:
+          additionalProperties:
+            type: string
+          type: object
+        model:
+          type: string
+        object:
+          type: string
+        output:
+          items:
+            $ref: '#/components/schemas/responses.OutputItem'
+          type: array
+          uniqueItems: false
+        previous_response_id:
+          type: string
+        status:
+          type: string
+        usage:
+          $ref: '#/components/schemas/responses.Usage'
+      type: object
+    responses.ResponseError:
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      type: object
+    responses.SelfToolResponse:
+      properties:
+        createdAt:
+          type: string
+        description:
+          type: string
+        enabled:
+          type: boolean
+        group:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        updatedAt:
+          type: string
+      type: object
+    responses.SendMessageResult:
+      properties:
+        message:
+          $ref: '#/components/schemas/responses.A2AMessage'
+      type: object
+    responses.Usage:
+      properties:
+        input_tokens:
+          type: integer
+        output_tokens:
+          type: integer
+        total_tokens:
+          type: integer
+      type: object
+    responses.VerifyAuthResponse:
+      properties:
+        expiresAt:
+          type: string
+        refreshExpiresAt:
+          type: string
+        refreshToken:
+          type: string
+        token:
+          type: string
+      type: object
+    responses.WellKnownAgent6022:
+      properties:
+        endpoints:
+          $ref: '#/components/schemas/responses.Agent6022Endpoints'
+        ensDomain:
+          type: string
+        name:
+          type: string
+        paymentMethods:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        protocol:
+          type: string
+        protocolVersion:
+          type: string
+        signatures:
+          items:
+            $ref: '#/components/schemas/responses.AgentCardSignature'
+          type: array
+          uniqueItems: false
+      type: object
+    responses.WellKnownAgentCard:
+      properties:
+        capabilities:
+          $ref: '#/components/schemas/responses.AgentCapabilities'
+        defaultInputModes:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        defaultOutputModes:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        description:
+          type: string
+        name:
+          type: string
+        signatures:
+          items:
+            $ref: '#/components/schemas/responses.AgentCardSignature'
+          type: array
+          uniqueItems: false
+        skills:
+          items:
+            $ref: '#/components/schemas/responses.AgentSkill'
+          type: array
+          uniqueItems: false
+        supportedInterfaces:
+          items:
+            $ref: '#/components/schemas/responses.AgentInterface'
+          type: array
+          uniqueItems: false
+        version:
+          type: string
+      type: object
+    x402.PaymentRequired:
+      properties:
+        accepts:
+          items:
+            $ref: '#/components/schemas/x402.PaymentRequirements'
+          type: array
+          uniqueItems: false
+        error:
+          type: string
+        resource:
+          $ref: '#/components/schemas/x402.ResourceInfo'
+        x402Version:
+          type: integer
+      type: object
+    x402.PaymentRequirements:
+      properties:
+        amount:
+          type: string
+        asset:
+          type: string
+        extra:
+          additionalProperties: {}
+          type: object
+        maxTimeoutSeconds:
+          type: integer
+        network:
+          type: string
+        payTo:
+          type: string
+        scheme:
+          type: string
+      type: object
+    x402.ResourceInfo:
+      properties:
+        description:
+          type: string
+        mimeType:
+          type: string
+        url:
+          type: string
+      type: object
+  securitySchemes:
+    BearerAuth:
+      in: header
+      name: Authorization
+      type: apiKey
+externalDocs:
+  description: ""
+  url: ""
+info:
+  description: 'Public HTTP front: auth (JWT + EIP-191), config, /responses; proxies
+    to runtime_host on loopback.'
+  title: Agentic Agent Node — Gateway Host API
+  version: "1.0"
+openapi: 3.1.0
+paths:
+  /.well-known/6022:
+    get:
+      description: Open 6022 discovery document; documents POST /responses and its
+        bounded `instructions` overlay.
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.WellKnownAgent6022'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: Not Found
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: Bad Gateway
+      summary: 6022 agent card
+      tags:
+      - "6022"
+  /.well-known/agent-card.json:
+    get:
+      description: Open A2A v1.0 agent card (ProtoJSON); advertises SendMessage. Errors
+        until the node is registered.
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.WellKnownAgentCard'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: Not Found
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: Bad Gateway
+      summary: A2A agent card
+      tags:
+      - A2A
+  /a2a:
+    post:
+      description: 'JSON-RPC 2.0 SendMessage (A2A v1.0): one inference turn, immediate
+        reply. x402-gated like /responses.'
+      parameters:
+      - description: x402 v2 payment payload (base64 JSON)
+        in: header
+        name: PAYMENT-SIGNATURE
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.A2ARequest'
+                description: JSON-RPC SendMessage request
+                summary: request
+        description: JSON-RPC SendMessage request
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.A2AResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: Unauthorized
+        "402":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/x402.PaymentRequired'
+          description: Payment Required
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: conversation_unavailable or agent_not_minted
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      summary: A2A SendMessage (JSON-RPC)
+      tags:
+      - A2A
+  /agent/collections:
+    get:
+      parameters:
+      - in: query
+        name: chainId
+        required: true
+        schema:
+          form: chainId
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.AgentCollectionsResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: List agent collections
+      tags:
+      - AgentCollections
+  /agent/guidance:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.AgentGuidanceResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Get agent guidance
+      tags:
+      - Config
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.SetAgentGuidanceRequest'
+                description: Agent guidance
+                summary: request
+        description: Agent guidance
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.AgentGuidanceResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Set agent guidance
+      tags:
+      - Config
+  /agent/registration:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.AgentRegistrationResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: draft_not_found
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Get agent registration draft
+      tags:
+      - AgentRegistration
+    post:
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              oneOf:
+              - title: collectionAddress
+                type: string
+              - title: name
+                type: string
+              - title: cloneOf
+                type: integer
+              - title: attributes
+                type: string
+              - title: image
+                type: file
+          multipart/form-data:
+            schema:
+              type: object
+        description: Collection address | Agent name | Token id this agent clones
+          | Attributes as a JSON object string; must include the required attributes
+          | Base image to frame
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.AgentRegistrationResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization, invalid_token or missing_owner
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Save agent registration draft
+      tags:
+      - AgentRegistration
+  /agent/registration/ens-info:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.EnsInfoResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: draft_not_found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: not_minted
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Get ENS calldata
+      tags:
+      - AgentRegistration
+  /agent/registration/ens/check:
+    post:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.RegistrationStatusResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: not_minted
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Check ENS status
+      tags:
+      - AgentRegistration
+  /agent/registration/mint-info:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.MintInfoResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: draft_not_found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: owner_missing
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Get mint calldata
+      tags:
+      - AgentRegistration
+  /agent/registration/mint/check:
+    post:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.RegistrationStatusResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: draft_not_found
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Check mint status
+      tags:
+      - AgentRegistration
+  /agent/registration/self:
+    post:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.RegistrationStatusResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: draft_not_found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: owner_missing
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Self mint + ENS register
+      tags:
+      - AgentRegistration
+  /agent/soul:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.AgentSoulResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: identity_not_found
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Get agent soul
+      tags:
+      - Identity
+  /auth/challenge:
+    get:
+      description: Returns a fresh SIWE (EIP-4361) message + expiry; sign it verbatim
+        (EIP-191) and post to /auth/verify.
+      parameters:
+      - description: wallet address the message is issued for
+        in: query
+        name: address
+        required: true
+        schema:
+          type: string
+      - description: chain id of the connected wallet
+        in: query
+        name: chainId
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.GetAuthChallengeResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.InternalError'
+          description: challenge_failed
+      summary: Auth challenge
+      tags:
+      - Auth
+  /auth/logout:
+    post:
+      description: Revokes the session behind the refresh token; idempotent.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.RefreshTokenRequest'
+                description: Refresh token
+                summary: request
+        description: Refresh token
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+      summary: Auth logout
+      tags:
+      - Auth
+  /auth/refresh:
+    post:
+      description: |-
+        Spends the refresh token (valid jwt.refresh_idle_ttl after issue, at most jwt.refresh_ttl
+        after sign-in), re-checks NFT ownership, issues a HS256 JWT and the next refresh token.
+        401 codes: refresh_token_missing, refresh_token_invalid, session_revoked,
+        refresh_token_reused, not_authorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.RefreshTokenRequest'
+                description: Refresh token
+                summary: request
+        description: Refresh token
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.RefreshAuthResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: codes listed in the description
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.InternalError'
+          description: refresh_failed
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: identity_not_found
+      summary: Auth refresh
+      tags:
+      - Auth
+  /auth/verify:
+    post:
+      description: |-
+        Rebuilds the EIP-4361 message, verifies the EIP-191 signature, checks NFT ownership,
+        issues a HS256 JWT and a refresh token.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.VerifyAuthRequest'
+                description: Address + signature
+                summary: request
+        description: Address + signature
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.VerifyAuthResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: challenge_not_found, signature_mismatch or not_authorized
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.InternalError'
+          description: verify_failed
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: identity_not_found
+      summary: Auth verify
+      tags:
+      - Auth
+  /config:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.ConfigResponse'
+          description: OK
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      summary: Public node config
+      tags:
+      - Config
+  /config/llm:
+    delete:
+      responses:
+        "204": {}
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Delete LLM config
+      tags:
+      - Config
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.GetLlmConfigResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: not_configured
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Get LLM config
+      tags:
+      - Config
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.SetLlmConfigRequest'
+                description: LLM config
+                summary: request
+        description: LLM config
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.GetLlmConfigResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Set LLM config
+      tags:
+      - Config
+  /config/llm/validate:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.SetLlmConfigRequest'
+                description: LLM config
+                summary: request
+        description: LLM config
+        required: true
+      responses:
+        "204": {}
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Validate LLM config
+      tags:
+      - Config
+  /config/mcp-connections:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.ListMcpConnectionsResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: List MCP connections
+      tags:
+      - Config
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.CreateMcpConnectionRequest'
+                description: MCP connection
+                summary: request
+        description: MCP connection
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.McpConnectionResponse'
+          description: Created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: mcp_connection_name_taken
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Create MCP connection
+      tags:
+      - Config
+  /config/mcp-connections/{id}:
+    delete:
+      parameters:
+      - description: MCP connection id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204": {}
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Delete MCP connection
+      tags:
+      - Config
+    put:
+      parameters:
+      - description: MCP connection id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.UpdateMcpConnectionRequest'
+                description: MCP connection
+                summary: request
+        description: MCP connection
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.McpConnectionResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: mcp_connection_not_found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: mcp_connection_name_taken
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Update MCP connection
+      tags:
+      - Config
+  /config/mcp-connections/tools:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.DiscoverMcpServerToolsRequest'
+                description: MCP server
+                summary: request
+        description: MCP server
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.McpServerToolsResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: mcp_connection_not_found
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Discover MCP server tools
+      tags:
+      - Config
+  /config/payment-receive-policy:
+    delete:
+      responses:
+        "204": {}
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Delete payment policy
+      tags:
+      - Config
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.GetPaymentReceivePolicyResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: agent_not_minted
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Get payment policy
+      tags:
+      - Config
+  /config/payment-receive-policy/rules:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.ListPaymentReceiveRulesResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: agent_not_minted
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: List payment rules
+      tags:
+      - Config
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.SavePaymentReceiveRuleRequest'
+                description: payment rule
+                summary: request
+        description: payment rule
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.PaymentReceiveRuleResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: agent_not_minted or asset_already_has_rule
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Create payment rule
+      tags:
+      - Config
+  /config/payment-receive-policy/rules/{id}:
+    delete:
+      parameters:
+      - description: rule id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204": {}
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: rule_not_found
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Delete payment rule
+      tags:
+      - Config
+    put:
+      parameters:
+      - description: rule id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.SavePaymentReceiveRuleRequest'
+                description: payment rule
+                summary: request
+        description: payment rule
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.PaymentReceiveRuleResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: rule_not_found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: agent_not_minted or asset_already_has_rule
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Update payment rule
+      tags:
+      - Config
+  /config/payment-spend-policy:
+    delete:
+      responses:
+        "204": {}
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Delete payment spend policy
+      tags:
+      - Config
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.GetPaymentSpendPolicyResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: agent_not_minted
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Get payment spend policy
+      tags:
+      - Config
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.UpdatePaymentSpendPolicyRequest'
+                description: spend policy
+                summary: request
+        description: spend policy
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.GetPaymentSpendPolicyResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: agent_not_minted
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Update payment spend policy
+      tags:
+      - Config
+  /config/payment-spend-policy/rules:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.ListPaymentSpendRulesResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: agent_not_minted
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: List payment spend rules
+      tags:
+      - Config
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.SavePaymentSpendRuleRequest'
+                description: spend rule
+                summary: request
+        description: spend rule
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.PaymentSpendRuleResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: agent_not_minted or asset_already_has_rule
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Create payment spend rule
+      tags:
+      - Config
+  /config/payment-spend-policy/rules/{id}:
+    delete:
+      parameters:
+      - description: rule id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204": {}
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: rule_not_found
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Delete payment spend rule
+      tags:
+      - Config
+    put:
+      parameters:
+      - description: rule id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.SavePaymentSpendRuleRequest'
+                description: spend rule
+                summary: request
+        description: spend rule
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.PaymentSpendRuleResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: rule_not_found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: asset_already_has_rule
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Update payment spend rule
+      tags:
+      - Config
+  /config/self-tools:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.ListSelfToolsResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: List self tools
+      tags:
+      - Config
+  /config/self-tools/{id}:
+    put:
+      parameters:
+      - description: self tool id
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.UpdateSelfToolRequest'
+                description: self tool
+                summary: request
+        description: self tool
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.SelfToolResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: self_tool_not_found
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Update self tool
+      tags:
+      - Config
+  /conversations:
+    get:
+      parameters:
+      - description: Page (default 1)
+        in: query
+        name: page
+        schema:
+          type: integer
+      - description: Elements per page (default 10, max 100)
+        in: query
+        name: elementsPerPage
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.ListConversationsResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: List conversations
+      tags:
+      - Conversations
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.CreateConversationRequest'
+                description: Conversation name
+                summary: request
+        description: Conversation name
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.ConversationResponse'
+          description: Created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: conversation_name_taken or agent_not_minted
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Create conversation
+      tags:
+      - Conversations
+  /conversations/{conversationId}:
+    put:
+      parameters:
+      - description: Conversation id
+        in: path
+        name: conversationId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.UpdateConversationRequest'
+                description: Conversation name
+                summary: request
+        description: Conversation name
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.ConversationResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: conversation_not_found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: conversation_name_taken
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Update conversation
+      tags:
+      - Conversations
+  /conversations/{conversationId}/messages:
+    get:
+      parameters:
+      - description: Conversation id
+        in: path
+        name: conversationId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.ListConversationMessagesResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: conversation_not_found
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: List conversation messages
+      tags:
+      - Conversations
+    post:
+      parameters:
+      - description: Conversation id
+        in: path
+        name: conversationId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.AppendConversationMessagesRequest'
+                description: Messages
+                summary: request
+        description: Messages
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.AppendConversationMessagesResponse'
+          description: Created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnauthorizedError'
+          description: missing_authorization or invalid_token
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.NotFoundError'
+          description: conversation_not_found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: agent_not_minted
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: runtime_unavailable
+      security:
+      - BearerAuth: []
+      summary: Append conversation messages
+      tags:
+      - Conversations
+  /health:
+    get:
+      description: Liveness probe; serves before bootstrap completes.
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.GetHealthResponse'
+          description: OK
+      summary: Health
+      tags:
+      - Health
+  /responses:
+    post:
+      description: 'x402 v2 gated (PAYMENT-SIGNATURE header): callers pay the cheapest
+        matching option; zero-price is free.'
+      parameters:
+      - description: Bearer JWT; a caller the policy lets in free needs no payment
+        in: header
+        name: Authorization
+        schema:
+          type: string
+      - description: x402 v2 payment payload (base64 JSON), required unless free
+        in: header
+        name: PAYMENT-SIGNATURE
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/requests.CreateResponseRequest'
+                description: Conversation turn
+                summary: request
+        description: Conversation turn
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responses.Response'
+          description: OK
+          headers:
+            PAYMENT-RESPONSE:
+              description: base64 x402 settle response, paid requests only
+              schema:
+                type: string
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ValidationError'
+          description: Bad Request
+        "402":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/x402.PaymentRequired'
+          description: Payment Required
+          headers:
+            PAYMENT-REQUIRED:
+              description: base64 x402 payment requirements
+              schema:
+                type: string
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.ConflictError'
+          description: conversation_unavailable or agent_not_minted
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors.UnavailableError'
+          description: access_decision_unavailable or facilitator_unavailable
+      summary: Create response
+      tags:
+      - Responses
+servers:
+- url: /

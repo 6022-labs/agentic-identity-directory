@@ -1,0 +1,295 @@
+{
+  "title": "Agentic \u2014 Identity Directory",
+  "schemaVersion": 39,
+  "version": 1,
+  "tags": [
+    "agentic",
+    "identity",
+    "directory"
+  ],
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "refresh": "30s",
+  "templating": {
+    "list": [
+      {
+        "name": "environment",
+        "label": "Environment",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "mimir"
+        },
+        "query": {
+          "query": "label_values(deployment_environment_name)",
+          "refId": "environment"
+        },
+        "definition": "label_values(deployment_environment_name)",
+        "includeAll": true,
+        "allValue": ".*",
+        "multi": true,
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "refresh": 2,
+        "sort": 1,
+        "hide": 0
+      },
+      {
+        "name": "service",
+        "label": "Service",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "mimir"
+        },
+        "query": {
+          "query": "label_values(service_name)",
+          "refId": "service"
+        },
+        "definition": "label_values(service_name)",
+        "includeAll": true,
+        "allValue": ".*",
+        "multi": true,
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "refresh": 2,
+        "sort": 1,
+        "hide": 0
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Blocks behind the confirmed head",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mimir"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max by (chain_id) (identity_directory_sync_head_block{deployment_environment_name=~\"$environment\", service_name=~\"$service\"}) - max by (chain_id) (identity_directory_sync_indexed_block{deployment_environment_name=~\"$environment\", service_name=~\"$service\"})",
+          "legendFormat": "chain {{chain_id}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Indexed block",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mimir"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max by (chain_id) (identity_directory_sync_indexed_block{deployment_environment_name=~\"$environment\", service_name=~\"$service\"})",
+          "legendFormat": "chain {{chain_id}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Failed sync passes",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mimir"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (chain_id, error_type) (increase(identity_directory_sync_pass_duration_seconds_count{deployment_environment_name=~\"$environment\", service_name=~\"$service\", error_type!=\"\"}[15m]))",
+          "legendFormat": "chain {{chain_id}} {{error_type}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "p95 sync pass duration",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mimir"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (chain_id, le) (rate(identity_directory_sync_pass_duration_seconds_bucket{deployment_environment_name=~\"$environment\", service_name=~\"$service\"}[15m])))",
+          "legendFormat": "chain {{chain_id}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Agent card fetches",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mimir"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (error_type) (rate(identity_directory_agent_card_fetch_duration_seconds_count{deployment_environment_name=~\"$environment\", service_name=~\"$service\"}[5m]))",
+          "legendFormat": "{{error_type}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "p95 agent card fetch duration",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mimir"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(identity_directory_agent_card_fetch_duration_seconds_bucket{deployment_environment_name=~\"$environment\", service_name=~\"$service\"}[5m])))",
+          "legendFormat": "p95"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Database queries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mimir"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (db_operation_name, db_collection_name) (rate(db_client_operation_duration_seconds_count{deployment_environment_name=~\"$environment\", service_name=~\"$service\"}[5m]))",
+          "legendFormat": "{{db_operation_name}} {{db_collection_name}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Database errors",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mimir"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (db_operation_name, error_type) (rate(db_client_operation_duration_seconds_count{deployment_environment_name=~\"$environment\", service_name=~\"$service\", error_type!=\"\"}[5m]))",
+          "legendFormat": "{{db_operation_name}} {{error_type}}"
+        }
+      ]
+    }
+  ]
+}
